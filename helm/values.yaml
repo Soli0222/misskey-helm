@@ -282,7 +282,7 @@ misskey:
     #  #username: example-username
 
     #redisForJobQueue:
-    #  host: mmisskey-redis-jobqueue
+    #  host: misskey-redis-jobqueue
     #  port: 6379
     #  #family: 0  # 0=Both, 4=IPv4, 6=IPv6
     #  #pass: example-pass
