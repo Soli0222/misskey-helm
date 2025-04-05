@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: misskey-web-deployment
+  labels:
+    app: misskey
+spec:
+  replicas: {{ .Values.misskey.web.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      app: misskey
+  template:
+    metadata:
+      labels:
+        app: misskey
+    spec:
+      containers:
+        - name: web
+          image: {{ .Values.misskey.web.image.repository }}:{{ .Values.misskey.web.image.tag | default .Chart.AppVersion }}
+          imagePullPolicy: {{ .Values.misskey.web.image.pullPolicy | default "IfNotPresent" }}
+          env:
+            - name: DATABASE_DB
+              valueFrom:
+                secretKeyRef:
+                  name: misskey-pguser-misskey
+                  key: dbname
+            - name: DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: misskey-pguser-misskey
+                  key: user
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: misskey-pguser-misskey
+                  key: password
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: misskey-pguser-misskey
+                  key: uri
+          ports:
+            - name: http
+              containerPort: {{ .Values.misskey.web.containerPort | default 3000 }}
+              protocol: TCP
+          {{- with .Values.misskey.web.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: config
+              mountPath: /misskey/.config
+              readOnly: true
+            {{- if .Values.misskey.persistence.enabled }}
+            - name: files
+              mountPath: /misskey/files
+            {{- end }}
+      volumes:
+        - name: config
+          configMap:
+            name: misskey-web-configmap
+        {{- if .Values.misskey.persistence.enabled }}
+        - name: files
+          persistentVolumeClaim:
+            claimName: misskey-files-pvc
+        {{- end }}

@@ -1,0 +1,297 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: misskey-web-configmap
+data:
+  default.yml: |
+    {{- if .Values.misskey.config.publishTarballInsteadOfProvideRepositoryUrl }}
+    publishTarballInsteadOfProvideRepositoryUrl: {{ .Values.misskey.config.publishTarballInsteadOfProvideRepositoryUrl }}
+    {{- end }}
+
+    setupPassword: {{ .Values.misskey.config.setupPassword }}
+
+    url: {{ .Values.misskey.config.url }}
+
+    port: {{ .Values.misskey.config.port }}
+
+    db:
+      host: {{ .Values.misskey.config.db.host }}
+      port: {{ .Values.misskey.config.db.port }}
+      db: {{ .Values.misskey.config.db.db }}
+      user: {{ .Values.misskey.config.db.user }}
+      pass: {{ .Values.misskey.config.db.pass }}
+
+      {{- if .Values.misskey.config.db.disableCache }}
+      disableCache: {{ .Values.misskey.config.db.disableCache }}
+      {{- end }}
+
+      {{- if .Values.misskey.config.db.extra }}
+      extra:
+        {{- toYaml .Values.misskey.config.db.extra | nindent 8 }}
+      {{- end }}
+
+    dbReplications: {{ .Values.misskey.config.dbReplications }}
+
+    {{- if .Values.misskey.config.dbSlaves }}
+    dbSlaves:
+      {{- toYaml .Values.misskey.config.dbSlaves | nindent 6 }}
+    {{- end }}
+
+    redis:
+      host: {{ .Values.misskey.config.redis.host }}
+      port: {{ .Values.misskey.config.redis.port }}
+      {{- if .Values.misskey.config.redis.family }}
+      family: {{ .Values.misskey.config.redis.family }}
+      {{- end }}
+      {{- if .Values.misskey.config.redis.pass }}
+      pass: {{ .Values.misskey.config.redis.pass }}
+      {{- end }}
+      {{- if .Values.misskey.config.redis.prefix }}
+      prefix: {{ .Values.misskey.config.redis.prefix }}
+      {{- end }}
+      {{- if .Values.misskey.config.redis.db }}
+      db: {{ .Values.misskey.config.redis.db }}
+      {{- end }}
+      {{- if .Values.misskey.config.redis.username }}
+      username: {{ .Values.misskey.config.redis.username }}
+      {{- end }}
+
+    {{- if .Values.misskey.config.redisForPubsub }}
+    redisForPubsub:
+      host: {{ .Values.misskey.config.redisForPubsub.host }}
+      port: {{ .Values.misskey.config.redisForPubsub.port }}
+      {{- if .Values.misskey.config.redisForPubsub.family }}
+      family: {{ .Values.misskey.config.redisForPubsub.family }}
+      {{- end }}
+      {{- if .Values.misskey.config.redisForPubsub.pass }}
+      pass: {{ .Values.misskey.config.redisForPubsub.pass }}
+      {{- end }}
+      {{- if .Values.misskey.config.redisForPubsub.prefix }}
+      prefix: {{ .Values.misskey.config.redisForPubsub.prefix }}
+      {{- end }}
+      {{- if .Values.misskey.config.redisForPubsub.db }}
+      db: {{ .Values.misskey.config.redisForPubsub.db }}
+      {{- end }}
+      {{- if .Values.misskey.config.redisForPubsub.username }}
+      username: {{ .Values.misskey.config.redisForPubsub.username }}
+      {{- end }}
+    {{- end }}
+
+    {{- if .Values.misskey.config.redisForJobQueue }}
+    redisForJobQueue:
+      host: {{ .Values.misskey.config.redisForJobQueue.host }}
+      port: {{ .Values.misskey.config.redisForJobQueue.port }}
+      {{- if .Values.misskey.config.redisForJobQueue.family }}
+      family: {{ .Values.misskey.config.redisForJobQueue.family }}
+      {{- end }}
+      {{- if .Values.misskey.config.redisForJobQueue.pass }}
+      pass: {{ .Values.misskey.config.redisForJobQueue.pass }}
+      {{- end }}
+      {{- if .Values.misskey.config.redisForJobQueue.prefix }}
+      prefix: {{ .Values.misskey.config.redisForJobQueue.prefix }}
+      {{- end }}
+      {{- if .Values.misskey.config.redisForJobQueue.db }}
+      db: {{ .Values.misskey.config.redisForJobQueue.db }}
+      {{- end }}
+      {{- if .Values.misskey.config.redisForJobQueue.username }}
+      username: {{ .Values.misskey.config.redisForJobQueue.username }}
+      {{- end }}
+    {{- end }}
+
+    {{- if .Values.misskey.config.redisForTimelines }}
+    redisForTimelines:
+      host: {{ .Values.misskey.config.redisForTimelines.host }}
+      port: {{ .Values.misskey.config.redisForTimelines.port }}
+      {{- if .Values.misskey.config.redisForTimelines.family }}
+      family: {{ .Values.misskey.config.redisForTimelines.family }}
+      {{- end }}
+      {{- if .Values.misskey.config.redisForTimelines.pass }}
+      pass: {{ .Values.misskey.config.redisForTimelines.pass }}
+      {{- end }}
+      {{- if .Values.misskey.config.redisForTimelines.prefix }}
+      prefix: {{ .Values.misskey.config.redisForTimelines.prefix }}
+      {{- end }}
+      {{- if .Values.misskey.config.redisForTimelines.db }}
+      db: {{ .Values.misskey.config.redisForTimelines.db }}
+      {{- end }}
+      {{- if .Values.misskey.config.redisForTimelines.username }}
+      username: {{ .Values.misskey.config.redisForTimelines.username }}
+      {{- end }}
+    {{- end }}
+
+    {{- if .Values.misskey.config.redisForReactions }}
+    redisForReactions:
+      host: {{ .Values.misskey.config.redisForReactions.host }}
+      port: {{ .Values.misskey.config.redisForReactions.port }}
+      {{- if .Values.misskey.config.redisForReactions.family }}
+      family: {{ .Values.misskey.config.redisForReactions.family }}
+      {{- end }}
+      {{- if .Values.misskey.config.redisForReactions.pass }}
+      pass: {{ .Values.misskey.config.redisForReactions.pass }}
+      {{- end }}
+      {{- if .Values.misskey.config.redisForReactions.prefix }}
+      prefix: {{ .Values.misskey.config.redisForReactions.prefix }}
+      {{- end }}
+      {{- if .Values.misskey.config.redisForReactions.db }}
+      db: {{ .Values.misskey.config.redisForReactions.db }}
+      {{- end }}
+      {{- if .Values.misskey.config.redisForReactions.username }}
+      username: {{ .Values.misskey.config.redisForReactions.username }}
+      {{- end }}
+    {{- end }}
+
+    fulltextSearch:
+      provider: {{ .Values.misskey.config.fulltextSearch.provider }}
+
+    {{- if .Values.misskey.config.meilisearch }}
+    meilisearch:
+      host: {{ .Values.misskey.config.meilisearch.host }}
+      port: {{ .Values.misskey.config.meilisearch.port }}
+      apiKey: {{ .Values.misskey.config.meilisearch.apiKey }}
+      ssl: {{ .Values.misskey.config.meilisearch.ssl }}
+      index: {{ .Values.misskey.config.meilisearch.index }}
+      scope: {{ .Values.misskey.config.meilisearch.scope }}
+    {{- end }}
+
+
+    id: {{ .Values.misskey.config.id }}
+
+    {{- if .Values.misskey.config.sentryForBackend }}
+    sentryForBackend:
+      enableNodeProfiling: {{ .Values.misskey.config.sentryForBackend.enableNodeProfiling }}
+      options:
+        dsn: {{ .Values.misskey.config.sentryForBackend.options.dsn }}
+    {{- end }}
+
+    {{- if .Values.misskey.config.sentryForFrontend }}
+    sentryForFrontend:
+      {{- if .Values.misskey.config.sentryForFrontend.vueIntegration }}
+      vueIntegration:
+        {{- toYaml .Values.misskey.config.sentryForFrontend.vueIntegration | nindent 8 }}
+      {{- end }}
+      {{- if .Values.misskey.config.sentryForFrontend.browserTracingIntegration }}
+      browserTracingIntegration:
+        {{- toYaml .Values.misskey.config.sentryForFrontend.browserTracingIntegration | nindent 8 }}
+      {{- end }}
+      {{- if .Values.misskey.config.sentryForFrontend.replayIntegration }}
+      replayIntegration:
+        {{- toYaml .Values.misskey.config.sentryForFrontend.replayIntegration | nindent 8 }}
+      {{- end }}
+      options:
+        dsn: {{ .Values.misskey.config.sentryForFrontend.options.dsn }}
+    {{- end }}
+
+    # Whether disable HSTS
+    {{- if .Values.misskey.config.disableHsts }}
+    disableHsts: {{ .Values.misskey.config.disableHsts }}
+    {{- end }}
+
+    # Number of worker processes
+    {{- if .Values.misskey.config.clusterLimit }}
+    clusterLimit: {{ .Values.misskey.config.clusterLimit }}
+    {{- end }}
+
+    # Job concurrency per worker
+    {{- if .Values.misskey.config.deliverJobConcurrency }}
+    deliverJobConcurrency: {{ .Values.misskey.config.deliverJobConcurrency }}
+    {{- end }}
+    {{- if .Values.misskey.config.inboxJobConcurrency }}
+    inboxJobConcurrency: {{ .Values.misskey.config.inboxJobConcurrency }}
+    {{- end }}
+    {{- if .Values.misskey.config.relationshipJobConcurrency }}
+    relationshipJobConcurrency: {{ .Values.misskey.config.relationshipJobConcurrency }}
+    {{- end }}
+
+    # Job rate limiter
+    {{- if .Values.misskey.config.deliverJobPerSec }}
+    deliverJobPerSec: {{ .Values.misskey.config.deliverJobPerSec }}
+    {{- end }}
+    {{- if .Values.misskey.config.inboxJobPerSec }}
+    inboxJobPerSec: {{ .Values.misskey.config.inboxJobPerSec }}
+    {{- end }}
+    {{- if .Values.misskey.config.relationshipJobPerSec }}
+    relationshipJobPerSec: {{ .Values.misskey.config.relationshipJobPerSec }}
+    {{- end }}
+
+    # Job attempts
+    {{- if .Values.misskey.config.deliverJobMaxAttempts }}
+    deliverJobMaxAttempts: {{ .Values.misskey.config.deliverJobMaxAttempts }}
+    {{- end }}
+    {{- if .Values.misskey.config.inboxJobMaxAttempts }}
+    inboxJobMaxAttempts: {{ .Values.misskey.config.inboxJobMaxAttempts }}
+    {{- end }}
+
+    # Local address used for outgoing requests
+    {{- if .Values.misskey.config.outgoingAddress }}
+    outgoingAddress: {{ .Values.misskey.config.outgoingAddress }}
+    {{- end }}
+
+    # IP address family used for outgoing request (ipv4, ipv6 or dual)
+    {{- if .Values.misskey.config.outgoingAddressFamily }}
+    outgoingAddressFamily: {{ .Values.misskey.config.outgoingAddressFamily }}
+    {{- end }}
+
+    # Proxy for HTTP/HTTPS
+    {{- if .Values.misskey.config.proxy }}
+    proxy: {{ .Values.misskey.config.proxy }}
+    {{- end }}
+
+    proxyBypassHosts:
+    {{- range .Values.misskey.config.proxyBypassHosts }}
+      - {{ . }}
+    {{- end }}
+
+    # Proxy for SMTP/SMTPS
+    {{- if .Values.misskey.config.proxySmtp }}
+    proxySmtp: {{ .Values.misskey.config.proxySmtp }}
+    {{- end }}
+
+    # Media Proxy
+    {{- if .Values.misskey.config.mediaProxy }}
+    mediaProxy: {{ .Values.misskey.config.mediaProxy }}
+    {{- end }}
+
+    # Proxy remote files (default: true)
+    proxyRemoteFiles: {{ .Values.misskey.config.proxyRemoteFiles }}
+
+    # Movie Thumbnail Generation URL
+    {{- if .Values.misskey.config.videoThumbnailGenerator }}
+    videoThumbnailGenerator: {{ .Values.misskey.config.videoThumbnailGenerator }}
+    {{- end }}
+
+    # Sign to ActivityPub GET request (default: true)
+    signToActivityPubGet: {{ .Values.misskey.config.signToActivityPubGet }}
+
+    # For security reasons, uploading attachments from the intranet is prohibited,
+    # but exceptions can be made from the following settings.
+    {{- if .Values.misskey.config.allowedPrivateNetworks }}
+    allowedPrivateNetworks:
+    {{- range .Values.misskey.config.allowedPrivateNetworks }}
+      - {{ . }}
+    {{- end }}
+    {{- end }}
+
+    # Disable automatic redirect for ActivityPub object lookup. (default: false)
+    {{- if .Values.misskey.config.disallowExternalApRedirect }}
+    disallowExternalApRedirect: {{ .Values.misskey.config.disallowExternalApRedirect }}
+    {{- end }}
+
+    # Upload or download file size limits (bytes)
+    {{- if .Values.misskey.config.maxFileSize }}
+    maxFileSize: {{ .Values.misskey.config.maxFileSize }}
+    {{- end }}
+
+    # PID File of master process
+    {{- if .Values.misskey.config.pidFile }}
+    pidFile: {{ .Values.misskey.config.pidFile }}
+    {{- end }}
+
+    # Log Settings
+    {{- if .Values.misskey.config.logging }}
+    logging:
+      {{- if .Values.misskey.config.logging.sql }}
+      sql:
+        enableQueryParamLogging: {{ .Values.misskey.config.logging.sql.enableQueryParamLogging }}
+        disableQueryTruncation: {{ .Values.misskey.config.logging.sql.disableQueryTruncation }}
+      {{- end }}
+    {{- end }}

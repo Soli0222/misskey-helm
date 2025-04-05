@@ -1,0 +1,72 @@
+{{- if .Values.redisReactions.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: misskey-redis-reactions
+  labels:
+    app: misskey-redis-reactions
+spec:
+  replicas: {{ .Values.redisReactions.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      app: misskey-redis-reactions
+  template:
+    metadata:
+      labels:
+        app: misskey-redis-reactions
+    spec:
+      containers:
+        - name: redis
+          image: {{ .Values.redisReactions.image.repository | default "redis" }}:{{ .Values.redisReactions.image.tag | default "7.0-alpine" }}
+          imagePullPolicy: {{ .Values.redisReactions.image.pullPolicy | default "IfNotPresent" }}
+          ports:
+            - name: redis
+              containerPort: 6379
+              protocol: TCP
+          {{- with .Values.redisReactions.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- if .Values.redisReactions.persistence.enabled }}
+          volumeMounts:
+            - name: redis-data
+              mountPath: /data
+          {{- end }}
+      {{- if .Values.redisReactions.persistence.enabled }}
+      volumes:
+        - name: redis-data
+          persistentVolumeClaim:
+            claimName: misskey-redis-reactions-data
+      {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: misskey-redis-reactions
+  labels:
+    app: misskey-redis-reactions
+spec:
+  ports:
+    - port: 6379
+      targetPort: redis
+      protocol: TCP
+      name: redis
+  selector:
+    app: misskey-redis-reactions
+---
+{{- if .Values.redisReactions.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: misskey-redis-reactions-data
+  labels:
+    app: misskey-redis-reactions
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{ .Values.redisReactions.persistence.storageClass | default "" }}
+  resources:
+    requests:
+      storage: {{ .Values.redisReactions.persistence.size | default "1Gi" }}
+{{- end }}
+{{- end }}

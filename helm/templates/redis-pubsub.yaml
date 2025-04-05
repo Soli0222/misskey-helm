@@ -1,0 +1,72 @@
+{{- if .Values.redisPubsub.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: misskey-redis-pubsub
+  labels:
+    app: misskey-redis-pubsub
+spec:
+  replicas: {{ .Values.redisPubsub.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      app: misskey-redis-pubsub
+  template:
+    metadata:
+      labels:
+        app: misskey-redis-pubsub
+    spec:
+      containers:
+        - name: redis
+          image: {{ .Values.redisPubsub.image.repository | default "redis" }}:{{ .Values.redisPubsub.image.tag | default "7.0-alpine" }}
+          imagePullPolicy: {{ .Values.redisPubsub.image.pullPolicy | default "IfNotPresent" }}
+          ports:
+            - name: redis
+              containerPort: 6379
+              protocol: TCP
+          {{- with .Values.redisPubsub.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- if .Values.redisPubsub.persistence.enabled }}
+          volumeMounts:
+            - name: redis-data
+              mountPath: /data
+          {{- end }}
+      {{- if .Values.redisPubsub.persistence.enabled }}
+      volumes:
+        - name: redis-data
+          persistentVolumeClaim:
+            claimName: misskey-redis-pubsub-data
+      {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: misskey-redis-pubsub
+  labels:
+    app: misskey-redis-pubsub
+spec:
+  ports:
+    - port: 6379
+      targetPort: redis
+      protocol: TCP
+      name: redis
+  selector:
+    app: misskey-redis-pubsub
+---
+{{- if .Values.redisPubsub.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: misskey-redis-pubsub-data
+  labels:
+    app: misskey-redis-pubsub
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{ .Values.redisPubsub.persistence.storageClass | default "" }}
+  resources:
+    requests:
+      storage: {{ .Values.redisPubsub.persistence.size | default "1Gi" }}
+{{- end }}
+{{- end }}

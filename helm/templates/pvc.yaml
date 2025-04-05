@@ -1,0 +1,13 @@
+{{- if .Values.misskey.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    name: misskey-files-pvc
+spec:
+    accessModes:
+        - ReadWriteOnce
+    storageClassName: {{ .Values.misskey.persistence.storageClass | default "" }}
+    resources:
+        requests:
+            storage: {{ .Values.misskey.persistence.size | default "10Gi" }}
+{{ - end }}

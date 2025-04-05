@@ -1,0 +1,72 @@
+{{- if .Values.redisJobQueue.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: misskey-redis-jobqueue
+  labels:
+    app: misskey-redis-jobqueue
+spec:
+  replicas: {{ .Values.redisJobQueue.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      app: misskey-redis-jobqueue
+  template:
+    metadata:
+      labels:
+        app: misskey-redis-jobqueue
+    spec:
+      containers:
+        - name: redis
+          image: {{ .Values.redisJobQueue.image.repository | default "redis" }}:{{ .Values.redisJobQueue.image.tag | default "7.0-alpine" }}
+          imagePullPolicy: {{ .Values.redisJobQueue.image.pullPolicy | default "IfNotPresent" }}
+          ports:
+            - name: redis
+              containerPort: 6379
+              protocol: TCP
+          {{- with .Values.redisJobQueue.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- if .Values.redisJobQueue.persistence.enabled }}
+          volumeMounts:
+            - name: redis-data
+              mountPath: /data
+          {{- end }}
+      {{- if .Values.redisJobQueue.persistence.enabled }}
+      volumes:
+        - name: redis-data
+          persistentVolumeClaim:
+            claimName: misskey-redis-jobqueue-data
+      {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: misskey-redis-jobqueue
+  labels:
+    app: misskey-redis-jobqueue
+spec:
+  ports:
+    - port: 6379
+      targetPort: redis
+      protocol: TCP
+      name: redis
+  selector:
+    app: misskey-redis-jobqueue
+---
+{{- if .Values.redisJobQueue.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: misskey-redis-jobqueue-data
+  labels:
+    app: misskey-redis-jobqueue
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{ .Values.redisJobQueue.persistence.storageClass | default "" }}
+  resources:
+    requests:
+      storage: {{ .Values.redisJobQueue.persistence.size | default "1Gi" }}
+{{- end }}
+{{- end }}

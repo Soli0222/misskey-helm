@@ -1,0 +1,38 @@
+apiVersion: postgres-operator.crunchydata.com/v1beta1
+kind: PostgresCluster
+metadata:
+  name: misskey
+spec:
+  postgresVersion: 16
+  instances:
+    - name: instance1
+      dataVolumeClaimSpec:
+        accessModes:
+        - "ReadWriteOnce"
+        resources:
+          requests:
+            storage: 10Gi
+  backups:
+    pgbackrest:
+      repos:
+      - name: repo1
+        volume:
+          volumeClaimSpec:
+            accessModes:
+            - "ReadWriteOnce"
+            resources:
+              requests:
+                storage: 10Gi
+  users:
+    - name: misskey
+      databases:
+        - mk1
+      options: "SUPERUSER"
+      password:
+        type: AlphaNumeric
+  patroni:
+    dynamicConfiguration:
+      postgresql:
+        pg_hba:
+          - host all all all scram-sha-256
+          - host all all 10.244.0.0/16 scram-sha-256
