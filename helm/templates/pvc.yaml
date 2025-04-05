@@ -10,4 +10,4 @@ spec:
     resources:
         requests:
             storage: {{ .Values.misskey.persistence.size | default "10Gi" }}
-{{ - end }}
+{{- end }}
