@@ -224,7 +224,7 @@ misskey:
     #───┘ PostgreSQL configuration └────────────────────────────────
 
     db:
-      host: localhost
+      host: misskey-primary
       port: 5432
 
       # # Database name
